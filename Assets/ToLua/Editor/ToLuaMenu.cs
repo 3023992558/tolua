@@ -870,7 +870,7 @@ public static class ToLuaMenu
     }
 
     [MenuItem("Lua/Gen LuaWrap + Binder", false, 4)]
-    static void GenLuaWrapBinder()
+	public static void GenLuaWrapBinder()
     {
         if (EditorApplication.isCompiling)
         {
@@ -886,7 +886,7 @@ public static class ToLuaMenu
     }
 
     [MenuItem("Lua/Generate All", false, 5)]
-    static void GenLuaAll()
+    public static void GenLuaAll()
     {
         if (EditorApplication.isCompiling)
         {
@@ -903,7 +903,7 @@ public static class ToLuaMenu
     }
 
     [MenuItem("Lua/Clear wrap files", false, 6)]
-    static void ClearLuaWraps()
+	public static void ClearLuaWraps()
     {
         string[] files = Directory.GetFiles(CustomSettings.saveDir, "*.cs", SearchOption.TopDirectoryOnly);
 
@@ -941,7 +941,7 @@ public static class ToLuaMenu
         AssetDatabase.Refresh();
     }
 
-    static void CopyLuaBytesFiles(string sourceDir, string destDir, bool appendext = true, string searchPattern = "*.lua", SearchOption option = SearchOption.AllDirectories)
+	public static void CopyLuaBytesFiles(string sourceDir, string destDir, bool appendext = true, string searchPattern = "*.lua", SearchOption option = SearchOption.AllDirectories)
     {
         if (!Directory.Exists(sourceDir))
         {
