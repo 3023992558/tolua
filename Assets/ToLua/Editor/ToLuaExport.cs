@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2015-2017 topameng(topameng@qq.com)
+Copyright (c) 2015-2016 topameng(topameng@qq.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -133,8 +133,6 @@ public static class ToLuaExport
         "Caching.SetNoBackupFlag",
         "Caching.ResetNoBackupFlag",
         "Light.areaSize",
-        "Light.lightmappingMode",
-        "Light.lightmapBakeType",
         "Security.GetChainOfTrustValue",
         "Texture2D.alphaIsTransparency",
         "WWW.movie",
@@ -149,6 +147,7 @@ public static class ToLuaExport
         "CanvasRenderer.onRequestRebuild",
         "Terrain.bakeLightProbesForTrees",
         "MonoBehaviour.runInEditMode",
+        "Light.lightmappingMode",
         //NGUI
         "UIInput.ProcessEvent",
         "UIWidget.showHandlesWithMoveTool",
@@ -2979,34 +2978,34 @@ public static class ToLuaExport
             {
                 if (!hasSelf)
                 {
-                    sb.AppendFormat("{0}{{\r\n{0}\tfunc.Call();\r\n{0}}}\r\n", head);
+                    sb.AppendFormat("{0}{{\r\n{0}\t try {{\r\n{0}\t\tfunc.Call();\r\n{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Instance.error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
                 }
                 else
                 {
-                    sb.AppendFormat("{0}{{\r\n{0}\tfunc.BeginPCall();\r\n", head);
-                    sb.AppendFormat("{0}\tfunc.Push(self);\r\n", head);
-                    sb.AppendFormat("{0}\tfunc.PCall();\r\n", head);                    
-                    sb.AppendFormat("{0}\tfunc.EndPCall();\r\n", head);                    
+                    sb.AppendFormat("{0}{{\r\n{0}\t try {{\r\n{0}\t\tfunc.BeginPCall();\r\n", head);
+                    sb.AppendFormat("{0}\t\tfunc.Push(self);\r\n", head);
+                    sb.AppendFormat("{0}\t\tfunc.PCall();\r\n", head);                    
+                    sb.AppendFormat("{0}\t\tfunc.EndPCall();\r\n{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Instance.error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n", head);                    
                     sb.AppendFormat("{0}}}\r\n", head);
                 }
             }
             else
             {
-                sb.AppendFormat("{0}{{\r\n{0}\tfunc.BeginPCall();\r\n", head);
-                if (hasSelf) sb.AppendFormat("{0}\tfunc.Push(self);\r\n", head);
-                sb.AppendFormat("{0}\tfunc.PCall();\r\n", head);
-                GenLuaFunctionRetValue(sb, mi.ReturnType, head + "\t", "ret");
-                sb.AppendFormat("{0}\tfunc.EndPCall();\r\n", head);
-                sb.AppendLineEx(head + "\treturn ret;");
-                sb.AppendFormat("{0}}}\r\n", head);
+                sb.AppendFormat("{0}{{\r\n{0}\t try {{\r\n{0}\t\tfunc.BeginPCall();\r\n", head);
+                if (hasSelf) sb.AppendFormat("{0}\t\tfunc.Push(self);\r\n", head);
+                sb.AppendFormat("{0}\t\tfunc.PCall();\r\n", head);
+                GenLuaFunctionRetValue(sb, mi.ReturnType, head + "\t\t", "ret");
+                sb.AppendFormat("{0}\t\tfunc.EndPCall();\r\n", head);
+                sb.AppendLineEx(head + "\t\treturn ret;");
+                sb.AppendFormat("{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Instance.error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
             }
 
             return;
         }
 
         sb.AppendFormat("{0}{{\r\n{0}", head);
-        sb.AppendLineEx("\tfunc.BeginPCall();");
-        if (hasSelf) sb.AppendFormat("{0}\tfunc.Push(self);\r\n", head);
+        sb.AppendLineEx("\ttry {\r\n\t\t\t\tfunc.BeginPCall();");
+        if (hasSelf) sb.AppendFormat("{0}\t\tfunc.Push(self);\r\n", head);
 
         for (int i = 0; i < n; i++)
         {                        
@@ -3016,24 +3015,24 @@ public static class ToLuaExport
             {
                 if (pi[i].ParameterType == typeof(byte[]) && IsByteBuffer(t))
                 {
-                    sb.AppendFormat("{2}\tfunc.PushByteBuffer(param{1});\r\n", push, i, head);
+                    sb.AppendFormat("{2}\t\tfunc.PushByteBuffer(param{1});\r\n", push, i, head);
                 }
                 else if (pi[i].Attributes != ParameterAttributes.Out)
                 {
-                    sb.AppendFormat("{2}\tfunc.{0}(param{1});\r\n", push, i, head);
+                    sb.AppendFormat("{2}\t\tfunc.{0}(param{1});\r\n", push, i, head);
                 }
             }
             else
             {
                 sb.AppendLineEx();
-                sb.AppendFormat("{0}\tfor (int i = 0; i < param{1}.Length; i++)\r\n", head, i);
-                sb.AppendLineEx(head + "\t{");
-                sb.AppendFormat("{2}\t\tfunc.{0}(param{1}[i]);\r\n", push, i, head);
-                sb.AppendLineEx(head + "\t}\r\n");
+                sb.AppendFormat("{0}\t\tfor (int i = 0; i < param{1}.Length; i++)\r\n", head, i);
+                sb.AppendLineEx(head + "\t\t{");
+                sb.AppendFormat("{2}\t\t\tfunc.{0}(param{1}[i]);\r\n", push, i, head);
+                sb.AppendLineEx(head + "\t\t}\r\n");
             }
         }
 
-        sb.AppendFormat("{0}\tfunc.PCall();\r\n", head);
+        sb.AppendFormat("{0}\t\tfunc.PCall();\r\n", head);
 
         if (mi.ReturnType == typeof(void))
         {
@@ -3045,7 +3044,7 @@ public static class ToLuaExport
                 }
             }
 
-            sb.AppendFormat("{0}\tfunc.EndPCall();\r\n", head);
+            sb.AppendFormat("{0}\t\tfunc.EndPCall();\r\n", head);
         }
         else
         {
@@ -3055,15 +3054,15 @@ public static class ToLuaExport
             {
                 if ((pi[i].Attributes & ParameterAttributes.Out) != ParameterAttributes.None)
                 {
-                    GenLuaFunctionRetValue(sb, pi[i].ParameterType.GetElementType(), head + "\t", "param" + i, true);
+                    GenLuaFunctionRetValue(sb, pi[i].ParameterType.GetElementType(), head + "\t\t", "param" + i, true);
                 }
             }
 
-            sb.AppendFormat("{0}\tfunc.EndPCall();\r\n", head);
-            sb.AppendLineEx(head + "\treturn ret;");
+            sb.AppendFormat("{0}\t\tfunc.EndPCall();\r\n", head);
+            sb.AppendLineEx(head + "\t\treturn ret;");
         }
 
-        sb.AppendFormat("{0}}}\r\n", head);
+        sb.AppendFormat("{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Instance.error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
     }      
 
     //static void GenToStringFunction()
@@ -3468,7 +3467,8 @@ public static class ToLuaExport
     public static void GenDelegates(DelegateType[] list)
     {        
         usingList.Add("System");
-        usingList.Add("System.Collections.Generic");        
+        usingList.Add("System.Collections.Generic");     
+        usingList.Add("ReignFramework");     
 
         for (int i = 0; i < list.Length; i++)
         {

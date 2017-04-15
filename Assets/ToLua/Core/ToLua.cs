@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2015-2017 topameng(topameng@qq.com)
+Copyright (c) 2015-2016 topameng(topameng@qq.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -521,10 +521,9 @@ namespace LuaInterface
         {
             if (_instanceID == -1)
             {
-                int start = LuaConst.toluaDir.IndexOf("Assets");
-                int end = LuaConst.toluaDir.LastIndexOf("/Lua");
-                string dir = LuaConst.toluaDir.Substring(start, end - start);
-                dir += "/Core/ToLua.cs";
+				int start = LuaConst.toluaCSDir.IndexOf("Assets");
+				string dir = LuaConst.toluaCSDir.Substring(start);
+                dir += "Core/ToLua.cs";
                 _instanceID = AssetDatabase.LoadAssetAtPath(dir, typeof(MonoScript)).GetInstanceID();//"Assets/ToLua/Core/ToLua.cs"
             }
         }
