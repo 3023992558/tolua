@@ -1930,12 +1930,11 @@ public static class ToLuaExport
 
             if (beCheckTypes)
             {
-                sb.AppendFormat("{0}{1} {2} = ({1})ToLua.ToObject(L, {4});\r\n", head, str, arg, GetTypeStr(t), stackPos);
+                sb.AppendFormat("{0}{1} {2} = ToLua.ToNullable<{3}>(L, {4});\r\n", head, str, arg, GetTypeStr(t), stackPos);
             }
             else
             {
-                sb.AppendFormat("{0}{1} {2} = ({1})ToLua.CheckVarObject(L, {4}, typeof({1}));\r\n", head, str, arg, GetTypeStr(t), stackPos);
-                //sb.AppendFormat("{0}{1} {2} = ToLua.CheckNullable<{3}>(L, {4});\r\n", head, str, arg, GetTypeStr(t), stackPos);
+                sb.AppendFormat("{0}{1} {2} = ToLua.CheckNullable<{3}>(L, {4});\r\n", head, str, arg, GetTypeStr(t), stackPos);
             }
         }
         else if (varType.IsValueType && !varType.IsEnum)
