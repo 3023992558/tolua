@@ -175,6 +175,47 @@ public static class CustomSettings
     {
         
     };
+	
+	//ngui优化，下面的类没有派生类，可以作为sealed class
+    public static List<Type> sealedList = new List<Type>()
+    {
+        /*typeof(Transform),
+        typeof(UIRoot),
+        typeof(UICamera),
+        typeof(UIViewport),
+        typeof(UIPanel),
+        typeof(UILabel),
+        typeof(UIAnchor),
+        typeof(UIAtlas),
+        typeof(UIFont),
+        typeof(UITexture),
+        typeof(UISprite),
+        typeof(UIGrid),
+        typeof(UITable),
+        typeof(UIWrapGrid),
+        typeof(UIInput),
+        typeof(UIScrollView),
+        typeof(UIEventListener),
+        typeof(UIScrollBar),
+        typeof(UICenterOnChild),
+        typeof(UIScrollView),        
+        typeof(UIButton),
+        typeof(UITextList),
+        typeof(UIPlayTween),
+        typeof(UIDragScrollView),
+        typeof(UISpriteAnimation),
+        typeof(UIWrapContent),
+        typeof(TweenWidth),
+        typeof(TweenAlpha),
+        typeof(TweenColor),
+        typeof(TweenRotation),
+        typeof(TweenPosition),
+        typeof(TweenScale),
+        typeof(TweenHeight),
+        typeof(TypewriterEffect),
+        typeof(UIToggle),
+        typeof(Localization),*/
+    };
 
     public static BindType _GT(Type t)
     {

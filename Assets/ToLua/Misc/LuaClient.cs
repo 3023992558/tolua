@@ -46,7 +46,12 @@ public class LuaClient : MonoBehaviour
 
     protected virtual LuaFileUtils InitLoader()
     {
-        return LuaFileUtils.Instance;       
+        if (LuaFileUtils.Instance != null)
+        {
+            return LuaFileUtils.Instance;
+        }
+
+        return new LuaFileUtils();
     }
 
     protected virtual void LoadLuaFiles()
@@ -56,17 +61,17 @@ public class LuaClient : MonoBehaviour
 
     protected virtual void OpenLibs()
     {
-        luaState.OpenLibs(LuaDLL.luaopen_pb);
-        luaState.OpenLibs(LuaDLL.luaopen_struct);
-        luaState.OpenLibs(LuaDLL.luaopen_lpeg);
-#if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
-        luaState.OpenLibs(LuaDLL.luaopen_bit);
-#endif
+//        luaState.OpenLibs(LuaDLL.luaopen_pb);
+//        luaState.OpenLibs(LuaDLL.luaopen_struct);
+//        luaState.OpenLibs(LuaDLL.luaopen_lpeg);
+//#if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
+//        luaState.OpenLibs(LuaDLL.luaopen_bit);
+//#endif
 
-        if (LuaConst.openLuaSocket)
-        {
-            OpenLuaSocket();            
-        }        
+        //if (LuaConst.openLuaSocket)
+        //{
+        //    OpenLuaSocket();            
+        //}        
 
         if (LuaConst.openLuaDebugger)
         {
@@ -82,10 +87,10 @@ public class LuaClient : MonoBehaviour
             return;
         }
 
-        if (!LuaConst.openLuaSocket)
-        {                            
-            OpenLuaSocket();
-        }
+        //if (!LuaConst.openLuaSocket)
+        //{                            
+        //    OpenLuaSocket();
+        //}
 
         if (!string.IsNullOrEmpty(LuaConst.zbsDir))
         {
@@ -95,38 +100,38 @@ public class LuaClient : MonoBehaviour
         luaState.LuaDoString(string.Format("DebugServerIp = '{0}'", ip));
     }
 
-    [MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-    static int LuaOpen_Socket_Core(IntPtr L)
-    {        
-        return LuaDLL.luaopen_socket_core(L);
-    }
+    //[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+    //static int LuaOpen_Socket_Core(IntPtr L)
+    //{        
+    //    return LuaDLL.luaopen_socket_core(L);
+    //}
 
-    [MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-    static int LuaOpen_Mime_Core(IntPtr L)
-    {
-        return LuaDLL.luaopen_mime_core(L);
-    }
+    //[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+    //static int LuaOpen_Mime_Core(IntPtr L)
+    //{
+    //    return LuaDLL.luaopen_mime_core(L);
+    //}
 
-    protected void OpenLuaSocket()
-    {
-        LuaConst.openLuaSocket = true;
+    //protected void OpenLuaSocket()
+    //{
+    //    LuaConst.openLuaSocket = true;
 
-        luaState.BeginPreLoad();
-        luaState.RegFunction("socket.core", LuaOpen_Socket_Core);
-        luaState.RegFunction("mime.core", LuaOpen_Mime_Core);                
-        luaState.EndPreLoad();                     
-    }
+    //    luaState.BeginPreLoad();
+    //    luaState.RegFunction("socket.core", LuaOpen_Socket_Core);
+    //    luaState.RegFunction("mime.core", LuaOpen_Mime_Core);                
+    //    luaState.EndPreLoad();                     
+    //}
 
     //cjson 比较特殊，只new了一个table，没有注册库，这里注册一下
-    protected void OpenCJson()
-    {
-        luaState.LuaGetField(LuaIndexes.LUA_REGISTRYINDEX, "_LOADED");
-        luaState.OpenLibs(LuaDLL.luaopen_cjson);
-        luaState.LuaSetField(-2, "cjson");
+    //protected void OpenCJson()
+    //{
+    //    luaState.LuaGetField(LuaIndexes.LUA_REGISTRYINDEX, "_LOADED");
+    //    luaState.OpenLibs(LuaDLL.luaopen_cjson);
+    //    luaState.LuaSetField(-2, "cjson");
 
-        luaState.OpenLibs(LuaDLL.luaopen_cjson_safe);
-        luaState.LuaSetField(-2, "cjson.safe");                               
-    }
+    //    luaState.OpenLibs(LuaDLL.luaopen_cjson_safe);
+    //    luaState.LuaSetField(-2, "cjson.safe");                               
+    //}
 
     protected virtual void CallMain()
     {
