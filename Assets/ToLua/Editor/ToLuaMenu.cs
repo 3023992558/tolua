@@ -245,6 +245,12 @@ public static class ToLuaMenu
         {
             return;
         }
+        
+        if (CustomSettings.sealedList.Contains(t))
+        {
+            CustomSettings.sealedList.Remove(t);
+            Debugger.LogError("{0} not a sealed class, it is parent of {1}", LuaMisc.GetTypeName(t), bt.name);
+        }
 
         if (t.IsInterface)
         {
