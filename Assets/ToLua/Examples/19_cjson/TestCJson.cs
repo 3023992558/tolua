@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using System.Collections;
 using LuaInterface;
 
@@ -22,7 +22,7 @@ public class TestCJson : LuaClient
     protected override void OpenLibs()
     {
         base.OpenLibs();
-        OpenCJson();                   
+        //OpenCJson();                   
     }
 
     protected override void OnLoadFinished()
