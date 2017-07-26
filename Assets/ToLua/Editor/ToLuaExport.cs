@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
 Copyright (c) 2015-2017 topameng(topameng@qq.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -86,10 +86,10 @@ public static class ToLuaExport
     static HashSet<string> usingList = new HashSet<string>();
     static MetaOp op = MetaOp.None;    
     static StringBuilder sb = null;
-    public static List<_MethodBase> methods = new List<_MethodBase>();
-    public static Dictionary<string, int> nameCounter = new Dictionary<string, int>();
-    public static FieldInfo[] fields = null;
-    public static PropertyInfo[] props = null;    
+    static List<_MethodBase> methods = new List<_MethodBase>();
+    static Dictionary<string, int> nameCounter = new Dictionary<string, int>();
+    static FieldInfo[] fields = null;
+    static PropertyInfo[] props = null;    
     static List<PropertyInfo> propList = new List<PropertyInfo>();  //非静态属性
     static List<PropertyInfo> allProps = new List<PropertyInfo>();
     static EventInfo[] events = null;
@@ -1682,7 +1682,7 @@ public static class ToLuaExport
         return count;
     }
 
-    public static void InitCtorList()
+    static void InitCtorList()
     {
         if (isStaticClass || type.IsAbstract || typeof(MonoBehaviour).IsAssignableFrom(type))
         {
