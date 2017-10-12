@@ -114,7 +114,7 @@ namespace LuaInterface
             
             float time = Time.realtimeSinceStartup;    
             InitTypeTraits();
-            InitStackTraits();        
+            InitStackTraits();
             L = LuaNewState();            
             LuaException.Init(L);
             stateMap.Add(L, this);                        
@@ -586,7 +586,7 @@ namespace LuaInterface
             return LuaLoadBuffer<T>(buffer, chunkName);
         }
 
-        public void DoFile(string fileName)
+        byte[] LoadFileBuffer(string fileName)
         {
 #if UNITY_EDITOR
             if (!beStart)
@@ -603,36 +603,30 @@ namespace LuaInterface
                 throw new LuaException(error);
             }
 
+            return buffer;
+        }
+
+        string LuaChunkName(string name)
+        {
             if (LuaConst.openLuaDebugger)
             {
-                fileName = LuaFileUtils.Instance.FindFile(fileName);
+                name = LuaFileUtils.Instance.FindFile(name);
             }
 
+            return "@" + name;
+        }
+
+        public void DoFile(string fileName)
+        {
+            byte[] buffer = LoadFileBuffer(fileName);
+            fileName = LuaChunkName(fileName);
             LuaLoadBuffer(buffer, fileName);
         }
 
         public T DoFile<T>(string fileName)
         {
-#if UNITY_EDITOR
-            if (!beStart)
-            {
-                throw new LuaException("you must call Start() first to initialize LuaState");
-            }
-#endif
-            byte[] buffer = luaFileLoader.ReadFile(fileName);
-
-            if (buffer == null)
-            {
-                string error = string.Format("cannot open {0}: No such file or directory", fileName);
-                error += luaFileLoader.FindFileError(fileName);
-                throw new LuaException(error);
-            }
-
-            if (LuaConst.openLuaDebugger)
-            {
-                fileName = luaFileLoader.FindFile(fileName);
-            }
-
+            byte[] buffer = LoadFileBuffer(fileName);
+            fileName = LuaChunkName(fileName);
             return LuaLoadBuffer<T>(buffer, fileName);
         }
 
@@ -1283,6 +1277,8 @@ namespace LuaInterface
                 {
                     return;
                 }
+
+                translator.Destroyudata(index);
             }
 
             index = translator.AddObject(o);
@@ -1914,7 +1910,6 @@ namespace LuaInterface
         {
             if (IntPtr.Zero != L)
             {
-                LuaGC(LuaGCOptions.LUA_GCCOLLECT, 0);
                 Collect();
 
                 foreach (KeyValuePair<Type, int> kv in metaMap)

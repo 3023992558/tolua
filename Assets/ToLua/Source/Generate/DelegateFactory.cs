@@ -18,9 +18,6 @@ public class DelegateFactory
 	public static void Register()
 	{
 		dict.Clear();
-
-
-
 	}
     
     public static Delegate CreateDelegate(Type t, LuaFunction func = null)

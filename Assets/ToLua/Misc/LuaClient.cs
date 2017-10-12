@@ -97,7 +97,7 @@ public class LuaClient : MonoBehaviour
             luaState.AddSearchPath(LuaConst.zbsDir);
         }
 
-        luaState.LuaDoString(string.Format("DebugServerIp = '{0}'", ip));
+        luaState.LuaDoString(string.Format("DebugServerIp = '{0}'", ip), "@LuaClient.cs");
     }
 
     //[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
@@ -221,8 +221,9 @@ public class LuaClient : MonoBehaviour
         if (luaState != null)
         {
 #if UNITY_5_4_OR_NEWER
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
 #endif    
+            luaState.Call("OnApplicationQuit", false);
             LuaState state = luaState;
             luaState = null;
 
@@ -238,7 +239,7 @@ public class LuaClient : MonoBehaviour
                 loop = null;
             }
 
-            state.Dispose();            
+            state.Dispose();
             Instance = null;
         }
     }
