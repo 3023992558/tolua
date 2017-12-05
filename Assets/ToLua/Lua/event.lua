@@ -165,21 +165,19 @@ _event.__call = function(self, ...)
 		self.current = i						
 		local flag, msg = f(...)
 		
-		if not flag then
-			if self.keepSafe then								
-				_list:remove(i)
-			end
+		if not flag then			
+			_list:remove(i)			
 			self.lock = false		
 			error(msg)				
 		end
 	end	
 
-	local opList = self.opList
-	self.opList = {}
+	local opList = self.opList	
 	self.lock = false		
 
-	for _, op in ipairs(opList) do									
+	for i, op in ipairs(opList) do									
 		op()
+		opList[i] = nil
 	end
 end
 
