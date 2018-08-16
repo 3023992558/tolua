@@ -11,7 +11,9 @@ using System.Reflection;
 public static class CustomSettings
 {
     public static string saveDir = Application.dataPath + "/ToLua/Source/Generate/";    
-    public static string toluaBaseType = Application.dataPath + "/ToLua/BaseType/";    
+    public static string toluaBaseType = Application.dataPath + "/ToLua/BaseType/";
+    public static string baseLuaDir = Application.dataPath + "/Tolua/Lua/";
+    public static string injectionFilesPath = Application.dataPath + "/ToLua/Injection/";
 
     //导出时强制做为静态类的类型(注意customTypeList 还要添加这个类型才能导出)
     //unity 有些类作为sealed class, 其实完全等价于静态类
@@ -53,8 +55,10 @@ public static class CustomSettings
         //_GT(typeof(TestExport)),
         //_GT(typeof(TestExport.Space)),
         //-------------------------------------------------------------------        
-                
-        _GT(typeof(Debugger)).SetNameSpace(null),        
+                        
+        _GT(typeof(LuaInjectionStation)),
+        _GT(typeof(InjectType)),
+        _GT(typeof(Debugger)).SetNameSpace(null),          
 
 #if USING_DOTWEENING
         _GT(typeof(DG.Tweening.DOTween)),
@@ -141,16 +145,12 @@ public static class CustomSettings
         _GT(typeof(RenderSettings)),                                                   
         _GT(typeof(BlendWeights)),           
         _GT(typeof(RenderTexture)),
-<<<<<<< HEAD:Assets/Editor/CustomSettings.cs
         _GT(typeof(Resources)),
 
         _GT(typeof(RectTransform)),
         _GT(typeof(Text)),
-
-=======
-        _GT(typeof(Resources)),     
+  
         _GT(typeof(LuaProfiler)),
->>>>>>> 21143b13c2ed1dcdaa36dd2c497c20eaa7a8ec94:Assets/Editor/Custom/CustomSettings.cs
     };
 
     public static List<Type> dynamicList = new List<Type>()
