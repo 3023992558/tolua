@@ -267,6 +267,11 @@ namespace LuaInterface
                         throw new LuaException(error, LuaException.GetLastError());
                     }
                 }
+				else
+				{
+					string err = LuaDLL.lua_tostring(L, -1);
+					throw new LuaException(err, LuaException.GetLastError());
+				}
 
                 return LuaDLL.lua_gettop(L) - n;
             }
@@ -1126,13 +1131,12 @@ namespace LuaInterface
 
                 if (obj != null)
                 {
-                    Type objType = obj.GetType();
-
                     if (obj is T)
                     {
                         return obj;
                     }
 
+                    Type objType = obj.GetType();
                     LuaDLL.luaL_argerror(L, stackPos, string.Format("{0} expected, got {1}", TypeTraits<T>.GetTypeName(), objType.FullName));
                 }
 
@@ -1630,7 +1634,7 @@ namespace LuaInterface
                     {
                         LuaDLL.lua_rawgeti(L, stackPos, i);                        
 
-                        if (LuaDLL.lua_type(L, pos) != LuaTypes.LUA_TNUMBER)
+                        if (!TypeTraits<T>.Check(L, pos))
                         {
                             LuaDLL.lua_pop(L, 1);
                             LuaDLL.luaL_typerror(L, stackPos, TypeTraits<T[]>.GetTypeName());
@@ -2010,7 +2014,7 @@ namespace LuaInterface
                     {
                         LuaDLL.lua_rawgeti(L, stackPos, i);
 
-                        if (LuaDLL.lua_type(L, pos) != LuaTypes.LUA_TNUMBER)
+                        if (!TypeTraits<T>.Check(L, pos))
                         {
                             LuaDLL.lua_pop(L, 1);
                             LuaDLL.luaL_typerror(L, stackPos, TypeTraits<T[]>.GetTypeName());
@@ -2631,7 +2635,7 @@ namespace LuaInterface
 
         public static void PushSealed<T>(IntPtr L, T o)
         {
-            if (o == null)
+            if (o == null || o.Equals(null))
             {
                 LuaDLL.lua_pushnil(L);
             }
