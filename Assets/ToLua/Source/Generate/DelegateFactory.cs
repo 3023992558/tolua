@@ -18,6 +18,9 @@ public class DelegateFactory
 	public static void Register()
 	{
 		dict.Clear();
+
+
+
 	}
     
     public static Delegate CreateDelegate(Type t, LuaFunction func = null)
@@ -81,8 +84,7 @@ public class DelegateFactory
     }
     
     public static Delegate RemoveDelegate(Delegate obj, LuaFunction func)
-    {
-        LuaState state = func.GetLuaState();
+    {        
         Delegate[] ds = obj.GetInvocationList();
 
         for (int i = 0; i < ds.Length; i++)
@@ -92,7 +94,7 @@ public class DelegateFactory
             if (ld != null && ld.func == func)
             {
                 obj = Delegate.Remove(obj, ds[i]);
-                state.DelayDispose(ld.func);
+                if (obj != null) obj.AddRef();
                 break;
             }
         }
@@ -109,8 +111,7 @@ public class DelegateFactory
             obj = Delegate.Remove(obj, dg);
             return obj;
         }
-
-        LuaState state = remove.func.GetLuaState();
+        
         Delegate[] ds = obj.GetInvocationList();        
 
         for (int i = 0; i < ds.Length; i++)
@@ -120,8 +121,7 @@ public class DelegateFactory
             if (ld != null && ld == remove)
             {
                 obj = Delegate.Remove(obj, ds[i]);
-                state.DelayDispose(ld.func);
-                state.DelayDispose(ld.self);
+                if (obj != null) obj.AddRef();                
                 break;
             }
         }
