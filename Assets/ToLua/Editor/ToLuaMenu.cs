@@ -1018,7 +1018,7 @@ public static class ToLuaMenu
 
 
     [MenuItem("Lua/Copy Lua  files to Resources", false, 51)]
-    static void CopyLuaFilesToRes()
+    public static void CopyLuaFilesToRes()
     {
         ClearAllLuaFiles();
         string destDir = Application.dataPath + "/Resources" + "/Lua";
@@ -1029,7 +1029,7 @@ public static class ToLuaMenu
     }
 
     [MenuItem("Lua/Copy Lua  files to Persistent", false, 52)]
-    static void CopyLuaFilesToPersistent()
+    public static void CopyLuaFilesToPersistent()
     {
         ClearAllLuaFiles();
         string destDir = Application.persistentDataPath + "/" + GetOS() + "/Lua";
