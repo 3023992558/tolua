@@ -123,9 +123,11 @@ public static class CustomSettings
        
 
         _GT(typeof(MeshRenderer)),            
+#if !UNITY_5_4_OR_NEWER
         _GT(typeof(ParticleEmitter)),
         _GT(typeof(ParticleRenderer)),
         _GT(typeof(ParticleAnimator)), 
+#endif
                               
         _GT(typeof(BoxCollider)),
         _GT(typeof(MeshCollider)),
@@ -146,19 +148,17 @@ public static class CustomSettings
         _GT(typeof(BlendWeights)),           
         _GT(typeof(RenderTexture)),
         _GT(typeof(Resources)),
-
-        _GT(typeof(RectTransform)),
-        _GT(typeof(Text)),
-  
         _GT(typeof(LuaProfiler)),
     };
 
     public static List<Type> dynamicList = new List<Type>()
     {
         typeof(MeshRenderer),
+#if !UNITY_5_4_OR_NEWER
         typeof(ParticleEmitter),
         typeof(ParticleRenderer),
         typeof(ParticleAnimator),
+#endif
 
         typeof(BoxCollider),
         typeof(MeshCollider),
