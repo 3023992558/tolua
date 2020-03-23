@@ -1786,6 +1786,37 @@ namespace LuaInterface
             }
         }
 
+        public void CollectByMain(int reference, string name, bool beFunction)
+        {
+            if (name != null)
+            {
+                funcMap.Remove(name);
+            }
+
+            ToLuaUnRef(reference);
+            funcRefMap.Remove(reference);
+
+            if (beFunction)
+            {
+                delegateMap.Remove(reference);
+            }
+
+            if (LogGC)
+            {
+                string str = name == null ? "null" : name;
+                string refType = beFunction ? "function" : "table";
+                Debugger.Log("collect lua {0} name {1}, id {2} in main", refType, str, reference);
+            }
+        }
+
+        public void AddToGCList(int reference, string name, bool beFunction)
+        {
+            lock (gcList)
+            {
+                gcList.Add(new GCRef(reference, name, beFunction));
+            }
+        }
+
         //在委托调用中减掉一个LuaFunction, 此lua函数在委托中还会执行一次, 所以必须延迟删除，委托值类型表现之一
         public void DelayDispose(LuaDelegate action)
         {
@@ -2132,7 +2163,7 @@ namespace LuaInterface
 #endif
 
             luaFileLoader.Dispose();
-            System.GC.SuppressFinalize(this);            
+            // System.GC.SuppressFinalize(this);            
         }
 
         //public virtual void Dispose(bool dispose)

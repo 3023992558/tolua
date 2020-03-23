@@ -1511,7 +1511,8 @@ public static class ToLuaMenu
         }
 
         LuaClient.Instance.DetachProfiler();
-
+    }
+    
     static void ExportAllLuaToBytecode(string srcDir, string outDir, string searchPattern = "*.lua")
     {
         if (!Directory.Exists(srcDir))
