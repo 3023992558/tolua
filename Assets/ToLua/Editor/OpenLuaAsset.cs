@@ -177,27 +177,27 @@ public class OpenLuaAsset : Editor
     {
         if (toluaFileID == -1)
         {
-            int start = LuaConst.toluaDir.IndexOf("Assets");
-            int end = LuaConst.toluaDir.LastIndexOf("/Lua");
-            string dir = LuaConst.toluaDir.Substring(start, end - start);
+            int start = LuaConst.toluaCSDir.IndexOf("Assets");
+            int end = LuaConst.toluaCSDir.LastIndexOf("/Lua");
+            string dir = LuaConst.toluaCSDir.Substring(start, end - start);
             dir += "/Core/ToLua.cs";
             toluaFileID = AssetDatabase.LoadAssetAtPath(dir, typeof(MonoScript)).GetInstanceID();//"Assets/ToLua/Core/ToLua.cs"
         }
 
         if (luaStateFileID == -1)
         {
-            int start = LuaConst.toluaDir.IndexOf("Assets");
-            int end = LuaConst.toluaDir.LastIndexOf("/Lua");
-            string dir = LuaConst.toluaDir.Substring(start, end - start);
+            int start = LuaConst.toluaCSDir.IndexOf("Assets");
+            int end = LuaConst.toluaCSDir.LastIndexOf("/Lua");
+            string dir = LuaConst.toluaCSDir.Substring(start, end - start);
             dir += "/Core/LuaState.cs";
             luaStateFileID = AssetDatabase.LoadAssetAtPath(dir, typeof(MonoScript)).GetInstanceID();//"Assets/ToLua/Core/LuaState.cs"
         }
 
         if (luaDllFileID == -1)
         {
-            int start = LuaConst.toluaDir.IndexOf("Assets");
-            int end = LuaConst.toluaDir.LastIndexOf("/Lua");
-            string dir = LuaConst.toluaDir.Substring(start, end - start);
+            int start = LuaConst.toluaCSDir.IndexOf("Assets");
+            int end = LuaConst.toluaCSDir.LastIndexOf("/Lua");
+            string dir = LuaConst.toluaCSDir.Substring(start, end - start);
             dir += "/Core/LuaDLL.cs";
             luaDllFileID = AssetDatabase.LoadAssetAtPath(dir, typeof(MonoScript)).GetInstanceID();//"Assets/ToLua/Core/LuaState.cs"            
         }

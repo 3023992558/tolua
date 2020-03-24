@@ -876,7 +876,7 @@ public static class ToLuaExport
         SaveFile(dir + wrapClassName + "Wrap.cs");
     }
 
-    public static void InitMethods()
+    static void InitMethods()
     {
         bool flag = false;
 
@@ -1017,7 +1017,7 @@ public static class ToLuaExport
         }
     }
 
-    public static void InitPropertyList()
+    static void InitPropertyList()
     {
         props = type.GetProperties(BindingFlags.GetProperty | BindingFlags.SetProperty | BindingFlags.Instance | binding);
         propList.AddRange(type.GetProperties(BindingFlags.GetProperty | BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase));
@@ -1136,7 +1136,7 @@ public static class ToLuaExport
         }  
     }
 
-    public static string GetMethodName(MethodBase md)
+    static string GetMethodName(MethodBase md)
     {
         if (md.Name.StartsWith("op_"))
         {
@@ -3631,14 +3631,14 @@ public static class ToLuaExport
             {
                 if (!hasSelf)
                 {
-                    sb.AppendFormat("{0}{{\r\n{0}\t try {{\r\n{0}\t\tfunc.Call();\r\n{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Instance.error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
+                    sb.AppendFormat("{0}{{\r\n{0}\t try {{\r\n{0}\t\tfunc.Call();\r\n{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
                 }
                 else
                 {
                     sb.AppendFormat("{0}{{\r\n{0}\t try {{\r\n{0}\t\tfunc.BeginPCall();\r\n", head);
                     sb.AppendFormat("{0}\t\tfunc.Push(self);\r\n", head);
                     sb.AppendFormat("{0}\t\tfunc.PCall();\r\n", head);                    
-                    sb.AppendFormat("{0}\t\tfunc.EndPCall();\r\n{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Instance.error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n", head);                    
+                    sb.AppendFormat("{0}\t\tfunc.EndPCall();\r\n{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n", head);                    
                     sb.AppendFormat("{0}}}\r\n", head);
                 }
             }
@@ -3647,10 +3647,10 @@ public static class ToLuaExport
                 sb.AppendFormat("{0}{{\r\n{0}\t try {{\r\n{0}\t\tfunc.BeginPCall();\r\n", head);
                 if (hasSelf) sb.AppendFormat("{0}\t\tfunc.Push(self);\r\n", head);
                 sb.AppendFormat("{0}\t\tfunc.PCall();\r\n", head);
-                GenLuaFunctionRetValue(sb, mi.ReturnType, head + "\t\t", "ret");
+                GenLuaFunctionRetValue(sb, mi.ReturnType, "\t" + head + "\t\t", "ret");
                 sb.AppendFormat("{0}\t\tfunc.EndPCall();\r\n", head);
                 sb.AppendLineEx(head + "\t\treturn ret;");
-                sb.AppendFormat("{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Instance.error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
+                sb.AppendFormat("{0} \t}} catch (Exception e) {{\r\n{0}\t\tLog.Error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
             }
 
             return;
@@ -3693,7 +3693,7 @@ public static class ToLuaExport
             {
                 if ((pi[i].Attributes & ParameterAttributes.Out) != ParameterAttributes.None)
                 {
-                    GenLuaFunctionRetValue(sb, pi[i].ParameterType.GetElementType(), head + "\t", "param" + i, true);
+                    GenLuaFunctionRetValue(sb, pi[i].ParameterType.GetElementType(), "\t" + head + "\t", "param" + i, true);
                 }
             }
 
@@ -3701,13 +3701,13 @@ public static class ToLuaExport
         }
         else
         {
-            GenLuaFunctionRetValue(sb, mi.ReturnType, head + "\t", "ret");
+            GenLuaFunctionRetValue(sb, mi.ReturnType, "\t" + head + "\t", "ret");
 
             for (int i = 0; i < pi.Length; i++)
             {
                 if ((pi[i].Attributes & ParameterAttributes.Out) != ParameterAttributes.None)
                 {
-                    GenLuaFunctionRetValue(sb, pi[i].ParameterType.GetElementType(), head + "\t\t", "param" + i, true);
+                    GenLuaFunctionRetValue(sb, pi[i].ParameterType.GetElementType(), "\t" + head + "\t", "param" + i, true);
                 }
             }
 
@@ -3715,7 +3715,7 @@ public static class ToLuaExport
             sb.AppendLineEx(head + "\t\treturn ret;");
         }
 
-        sb.AppendFormat("{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Instance.error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
+        sb.AppendFormat("{0}\t }} catch (Exception e) {{\r\n{0}\t\tLog.Error(\"call lua error\", e);\r\n{0}\t\tthrow e;\r\n{0}\t }}\r\n{0}}}\r\n", head);
     }      
 
     //static void GenToStringFunction()
