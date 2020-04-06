@@ -64,18 +64,18 @@ public class LuaClient : MonoBehaviour
     {
         //保持库名字与5.1.5库中一致
         luaState.BeginPreLoad();                        
-        luaState.AddPreLoadLib("pb2", new LuaCSFunction(LuaDLL.luaopen_pb));
-        luaState.AddPreLoadLib("struct", new LuaCSFunction(LuaDLL.luaopen_struct));
-        luaState.AddPreLoadLib("lpeg", new LuaCSFunction(LuaDLL.luaopen_lpeg));
-        luaState.AddPreLoadLib("cjson", new LuaCSFunction(LuaDLL.luaopen_cjson));
-        luaState.AddPreLoadLib("cjson.safe", new LuaCSFunction(LuaDLL.luaopen_cjson_safe));
+        //luaState.AddPreLoadLib("pb2", new LuaCSFunction(LuaDLL.luaopen_pb));
+        //luaState.AddPreLoadLib("struct", new LuaCSFunction(LuaDLL.luaopen_struct));
+        //luaState.AddPreLoadLib("lpeg", new LuaCSFunction(LuaDLL.luaopen_lpeg));
+        //luaState.AddPreLoadLib("cjson", new LuaCSFunction(LuaDLL.luaopen_cjson));
+        //luaState.AddPreLoadLib("cjson.safe", new LuaCSFunction(LuaDLL.luaopen_cjson_safe));
 #if (UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX) && !LUAC_5_3
-        luaState.AddPreLoadLib("bit", new LuaCSFunction(LuaDLL.luaopen_bit));
+        //luaState.AddPreLoadLib("bit", new LuaCSFunction(LuaDLL.luaopen_bit));
 #endif
 
         if (LuaConst.openLuaSocket || LuaConst.openLuaDebugger)
         {
-            OpenLuaSocket();
+            //OpenLuaSocket();
         }
 
         luaState.EndPreLoad();          
@@ -107,12 +107,12 @@ public class LuaClient : MonoBehaviour
         luaState.LuaDoString(string.Format("DebugServerIp = '{0}'", ip), "@LuaClient.cs");
     }
 
-    protected void OpenLuaSocket()
-    {
-        LuaConst.openLuaSocket = true;        
-        luaState.AddPreLoadLib("socket.core", new LuaCSFunction(LuaDLL.luaopen_socket_core));
-        luaState.AddPreLoadLib("mime.core", new LuaCSFunction(LuaDLL.luaopen_mime_core));        
-    }
+    //protected void OpenLuaSocket()
+    //{
+        //LuaConst.openLuaSocket = true;        
+        //luaState.AddPreLoadLib("socket.core", new LuaCSFunction(LuaDLL.luaopen_socket_core));
+        //luaState.AddPreLoadLib("mime.core", new LuaCSFunction(LuaDLL.luaopen_mime_core));        
+    //}
 
     //cjson 比较特殊，只new了一个table，没有注册库，这里注册一下
     //protected void OpenCJson()
